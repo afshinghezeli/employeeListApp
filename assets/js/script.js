@@ -2,7 +2,7 @@
 document.cookie = "token=RYUEE3EgdEwsLVZP7mhL; path=/; max-age=86400"; // valid for 1 day
 
 $(document).ready(function () {
-    // get tocken from cookie
+    // get token from cookie
     function getCookie(name) {
         const value = `; ${document.cookie}`,
             parts = value.split(`; ${name}=`);
@@ -20,36 +20,28 @@ $(document).ready(function () {
         return;
     }
 
-    //  Error => CORS
-    // $.ajax({
-    //     url: 'https://leadstreamline.com/playground',
-    //     method: 'POST',
-    //     headers: {
-    //         'Authorization': `Bearer ${token}` 
-    //     },
-    //     success: function (response) {
-    //         if (response && response.data) {
-    //             renderEmployees(response.data);
-    //         } else {
-    //             console.error("داده‌ای برای نمایش وجود ندارد.");
-    //         }
-    //     },
-    //     error: function (xhr, status, error) {
-    //         console.error("خطا در ارسال درخواست: ", error);
-    //     }
-    // });
+    // Show the spinner before the request starts
+    $('#spinner').show();
 
+    //  Error => CORS
     $.ajax({
-        url: 'https://jsonplaceholder.typicode.com/users',
+        url: 'https://cors-anywhere.herokuapp.com/https://leadstreamline.com/playground',
         method: 'GET',
-        success: (response) => {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        success: function (response) {
+            // Hide the spinner once response is received
+            $('#spinner').hide();
             if (response) {
                 return renderEmployees(response);
             }
             return console.error("داده‌ای برای نمایش وجود ندارد.");
-
         },
-        error: (error) => {
+        error: function (xhr, status, error) {
+            // Hide the spinner in case of error
+            $('#spinner').hide();
             console.error("خطا در ارسال درخواست: ", error);
         }
     });
@@ -66,16 +58,15 @@ $(document).ready(function () {
                 <div class="card employee-card">
                     <div class="card-body">
                         <h5 class="card-title">${employee.name}</h5>
-                        <p class="card-text">Website: ${employee.website}</p>
-                        <p class="card-text">Email: ${employee.email}</p>
+                        <p class="card-text">Department: ${employee.department}</p>
+                        <p class="card-text">ID: ${employee.id}</p>
                     </div>
                 </div>
             `;
 
-            fragment.appendChild(card); // add cart to documentFragment
+            fragment.appendChild(card); // add card to documentFragment
         });
 
-        container.append(fragment); // add all carts to dom
+        container.append(fragment); // add all cards to DOM
     }
-
 });
